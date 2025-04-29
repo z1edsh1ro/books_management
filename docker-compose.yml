@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: server
+    build:
+      context: ./server
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    volumes:
+      - ./server:/app
+    command: go run .
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5431:5432"
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    restart: unless-stopped
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  postgres-db:
