@@ -1,6 +1,6 @@
 <template>
-  <q-page class="flex flex-center">
-    <div class="q-pa-md" style="max-width: 400px">
+  <q-page class="flex justify-center">
+    <div class="q-pa-md full-width" style="max-width: 400px">
       <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
         <q-input
           filled
@@ -12,7 +12,6 @@
         />
 
         <q-file
-          style="max-width: 400px"
           v-model="file"
           counter
           filled

@@ -1,83 +1,85 @@
 <template>
-  <div class="q-pa-md" style="max-width: 400px">
-    <q-form @submit="onSubmit" class="q-gutter-md">
-      <q-input filled v-model="id" label="ID" readonly />
+  <q-page class="flex justify-center">
+    <div class="q-pa-md full-width" style="max-width: 400px">
+      <q-form @submit="onSubmit" class="q-gutter-md">
+        <q-input filled v-model="id" label="ID" readonly />
 
-      <q-input
-        filled
-        v-model="title"
-        label="Your Title *"
-        lazy-rules
-        :rules="[(val) => (val && val.length > 0 && val.length < 10) || 'Please type something']"
-      />
+        <q-input
+          filled
+          v-model="title"
+          label="Your Title *"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0 && val.length < 10) || 'Please type something']"
+        />
 
-      <q-file
-        style="max-width: 400px"
-        v-model="file"
-        counter
-        filled
-        use-chips
-        label="Image (< 1 MB size and PNG only)"
-        :rules="[(val) => val || 'Please type something']"
-        :filter="checkFile"
-      >
-        <template v-slot:prepend>
-          <q-icon name="cloud_upload" />
-        </template>
-      </q-file>
+        <q-file
+          style="max-width: 400px"
+          v-model="file"
+          counter
+          filled
+          use-chips
+          label="Image (< 1 MB size and PNG only)"
+          :rules="[(val) => val || 'Please type something']"
+          :filter="checkFile"
+        >
+          <template v-slot:prepend>
+            <q-icon name="cloud_upload" />
+          </template>
+        </q-file>
 
-      <q-input
-        filled
-        v-model="author"
-        label="Your Author *"
-        lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
-      />
+        <q-input
+          filled
+          v-model="author"
+          label="Your Author *"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        />
 
-      <q-input
-        filled
-        v-model="description"
-        label="Your Description *"
-        lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
-      />
+        <q-input
+          filled
+          v-model="description"
+          label="Your Description *"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+        />
 
-      <q-input
-        filled
-        v-model="publishedAt"
-        mask="date"
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
-        label="Your Published At *"
-      >
-        <template v-slot:append>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="publishedAt">
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
+        <q-input
+          filled
+          v-model="publishedAt"
+          mask="date"
+          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+          label="Your Published At *"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-date v-model="publishedAt">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
 
-      <q-select
-        label="Your Status *"
-        lazy-rules
-        :rules="[(val) => (val && val.length > 0) || 'Please type something']"
-        transition-show="flip-up"
-        transition-hide="flip-down"
-        filled
-        v-model="status"
-        :options="options"
-      />
+        <q-select
+          label="Your Status *"
+          lazy-rules
+          :rules="[(val) => (val && val.length > 0) || 'Please type something']"
+          transition-show="flip-up"
+          transition-hide="flip-down"
+          filled
+          v-model="status"
+          :options="options"
+        />
 
-      <div>
-        <q-btn label="Edit" type="submit" color="green-14" />
-      </div>
-    </q-form>
-  </div>
+        <div>
+          <q-btn label="Edit" type="submit" color="green-14" />
+        </div>
+      </q-form>
+    </div>
+  </q-page>
 </template>
 
 <script setup>
