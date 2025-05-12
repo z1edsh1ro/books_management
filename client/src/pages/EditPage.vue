@@ -12,21 +12,6 @@
           :rules="[(val) => (val && val.length > 0 && val.length < 10) || 'Please type something']"
         />
 
-        <q-file
-          style="max-width: 400px"
-          v-model="file"
-          counter
-          filled
-          use-chips
-          label="Image (< 1 MB size and PNG only)"
-          :rules="[(val) => val || 'Please type something']"
-          :filter="checkFile"
-        >
-          <template v-slot:prepend>
-            <q-icon name="cloud_upload" />
-          </template>
-        </q-file>
-
         <q-input
           filled
           v-model="author"
@@ -88,7 +73,6 @@ import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const title = ref(null)
-const file = ref(null)
 const author = ref(null)
 const description = ref(null)
 const publishedAt = ref(null)
@@ -103,12 +87,8 @@ const options = ['available', 'borrowed', 'reserved', 'lost']
 const fetchBook = async () => {
   const endPoint = `http://127.0.0.1:3000/book/${id.value}`
 
-  const requestOptions = {
-    method: 'DELETE',
-  }
-
   try {
-    const response = await fetch(endPoint, requestOptions)
+    const response = await fetch(endPoint)
 
     if (!response.ok) {
       throw new Error(`Cannot fetch book data, ID: ${id.value}`)
@@ -117,26 +97,28 @@ const fetchBook = async () => {
     const responseJson = await response.json()
     console.log('Response: ', responseJson)
 
-    setBook(responseJson)
+    setBook(responseJson.data)
   } catch (error) {
     console.error('Error: ', error)
   }
 }
 
 const setBook = (data) => {
-  console.log(data)
-  title.value = 'test'
-  author.value = 'test'
-  description.value = 'test'
-  publishedAt.value = '2025/05/07'
-  status.value = 'available'
+  title.value = data.title
+  author.value = data.author
+  description.value = data.description
+  publishedAt.value = data.published_at
+  status.value = data.status
 }
 
 const updateBook = async (data) => {
+  const myHeaders = new Headers()
+  myHeaders.append('Content-Type', 'application/json')
   const endPoint = `http://127.0.0.1:3000/book/${id.value}`
 
   const requestOptions = {
-    method: 'DELETE',
+    method: 'PUT',
+    headers: myHeaders,
     body: data,
   }
 
@@ -151,22 +133,22 @@ const updateBook = async (data) => {
 
     console.log('Response: ', responseJson)
 
-    alert(responseJson.message)
+    alert(responseJson.status)
   } catch (error) {
     console.error(error)
   }
 }
 
 const preparePayload = () => {
-  const formData = new FormData()
-  formData.append('title', title.value)
-  formData.append('image', file.value)
-  formData.append('author', author.value)
-  formData.append('description', description.value)
-  formData.append('published_at', convertDate(publishedAt.value))
-  formData.append('status', status.value)
+  const payload = JSON.stringify({
+    title: title.value,
+    author: author.value,
+    description: description.value,
+    published_at: convertDate(publishedAt.value),
+    status: status.value,
+  })
 
-  return formData
+  return payload
 }
 
 const onSubmit = () => {
@@ -175,10 +157,6 @@ const onSubmit = () => {
   updateBook(payload)
 
   router.push('/')
-}
-
-const checkFile = (file) => {
-  return file.filter((file) => file.size < 1024 * 1000 && file.type === 'image/png')
 }
 
 const convertDate = (date) => {

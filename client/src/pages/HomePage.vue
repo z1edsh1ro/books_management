@@ -3,17 +3,11 @@
     <q-table flat bordered title="Books" :rows="rows" :columns="columns" row-key="name">
       <template v-slot:top>
         <q-btn icon="add" @click="onCreate()" />
-        <!-- <q-space /> -->
-        <!-- <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input> -->
       </template>
 
-      <template v-slot:body-cell-img>
-        <q-td props="props">
-          <q-img :src="props.row.image" />
+      <template v-slot:body-cell-image="props">
+        <q-td :props="props">
+          <q-img :src="`http://127.0.0.1:3000/files/${props.row.image}`" />
         </q-td>
       </template>
 
@@ -36,11 +30,11 @@ const columns = ref([
   { name: 'image', label: 'Image', field: 'image', sortable: true },
   { name: 'title', label: 'Title', field: 'title', sortable: true },
   { name: 'author', label: 'Author', field: 'author', sortable: true },
-  { name: 'category', label: 'Category', field: 'category' },
+  { name: 'status', label: 'Status', field: 'status' },
   { name: 'description', label: 'Description', field: 'description' },
-  { name: 'published_date', label: 'Published Date', field: 'published_date' },
-  { name: 'CreatedAt', label: 'Created At', field: 'CreatedAt', sortable: true },
-  { name: 'UpdatedAt', label: 'Updated At', field: 'UpdatedAt', sortable: true },
+  { name: 'publishedAt', label: 'Published Date', field: 'published_at' },
+  { name: 'CreatedAt', label: 'Created At', field: 'created_at', sortable: true },
+  { name: 'UpdatedAt', label: 'Updated At', field: 'updated_at', sortable: true },
   { name: 'actions', label: '', field: 'actions', sortable: true },
 ])
 
@@ -48,12 +42,26 @@ const rows = ref([])
 
 const router = useRouter()
 
-const fetchData = () => {
-  fetch('https://www.melivecode.com/api/users')
-    .then((response) => response.json())
-    .then((result) => {
-      rows.value = result
-    })
+const fetchData = async () => {
+  const endPoint = 'http://127.0.0.1:3000/book'
+
+  try {
+    const response = await fetch(endPoint)
+
+    console.log(response)
+
+    if (!response.ok) {
+      throw new Error('Cannot fetch book data')
+    }
+
+    const responseJson = await response.json()
+
+    console.log(responseJson)
+
+    rows.value = responseJson.data
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 const onEdit = (id) => {
@@ -61,7 +69,6 @@ const onEdit = (id) => {
 }
 
 const onDelete = (id) => {
-  console.log(id)
   deleteBook(id)
 }
 
@@ -100,16 +107,4 @@ const deleteBook = async (id) => {
 }
 
 fetchData()
-// [
-//   {
-//     id: 'Frozen Yogurt',
-//     title: 159,
-//     author: 6.0,
-//     published_date: 24,
-//     category: 4.0,
-//     description: 87,
-//     CreatedAt: '14%',
-//     UpdatedAt: '1%'
-//   },
-// ]
 </script>

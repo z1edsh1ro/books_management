@@ -1,25 +1,23 @@
 package main
 
 import (
-	"server/database"
-	"server/handlers"
+	"server/controllers"
 	"server/services"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func setupRoutes(app *fiber.App, db *database.GormBookRepository) {
-	// Create service and handler instances
-	bookService := services.NewBookService(db)
-	bookHandler := handlers.NewBookHandler(bookService)
+func setupRoutes(app *fiber.App) {
+	bookService := services.NewBookService()
+	bookController := controllers.NewBookController(bookService)
 
 	// Book routes
-	books := app.Group("/books")
-	books.Post("/", bookHandler.CreateBook)
-	books.Get("/", bookHandler.ListBooks)
-	books.Get("/:id", bookHandler.GetBook)
-	books.Put("/:id", bookHandler.UpdateBook)
-	books.Delete("/:id", bookHandler.DeleteBook)
-	books.Post("/:id/borrow", bookHandler.BorrowBook)
-	books.Post("/:id/return", bookHandler.ReturnBook)
+	books := app.Group("/book")
+	books.Post("/", bookController.CreateBook)
+	books.Get("/", bookController.ListBooks)
+	books.Get("/:id", bookController.GetBook)
+	books.Put("/:id", bookController.UpdateBook)
+	books.Delete("/:id", bookController.DeleteBook)
+
+	app.Static("/files", "./storages")
 }
